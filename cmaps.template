@@ -14,6 +14,7 @@ CMAPSFILE_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'colormaps')
 USER_CMAPFILE_DIR = os.environ.get('CMAP_DIR')
 
+
 class Cmaps(object):
     """colormaps"""
 
@@ -31,7 +32,6 @@ class Cmaps(object):
         else:
             return np.asarray(pattern.findall(cmap_buff), 'u1') / 255.
 
-
     def _parse_cmaps(self):
         if USER_CMAPFILE_DIR is not None:
             cmapsflist = sorted(glob(os.path.join(USER_CMAPFILE_DIR, '*.rgb')))
@@ -48,18 +48,27 @@ class Cmaps(object):
                 try:
                     if cname in matplotlib.colormaps:
                         return matplotlib.colormaps.get_cmap(cname)
-                except:
-                    pass
+                except AttributeError:
+                    if cname in matplotlib.cm._cmap_registry:
+                        return matplotlib.cm.get_cmap(cname)
                 cmap = Colormap(self._coltbl(cmap_file), name=cname)
-                matplotlib.colormaps.register(name=cname, cmap=cmap)
+                try:
+                    matplotlib.colormaps.register(name=cname, cmap=cmap)
+                except AttributeError:
+                    matplotlib.cm.register_cmap(name=cname, cmap=cmap)
                 setattr(self, cname, cmap)
+
+                cname = cname + '_r'
 
                 try:
                     if cname in matplotlib.colormaps:
                         return matplotlib.colormaps.get_cmap(cname)
-                except:
-                    pass
-                cname = cname + '_r'
+                except AttributeError:
+                    if cname in matplotlib.cm._cmap_registry:
+                        return matplotlib.cm.get_cmap(cname)
                 cmap = Colormap(self._coltbl(cmap_file)[::-1], name=cname)
-                matplotlib.colormaps.register(name=cname, cmap=cmap)
+                try:
+                    matplotlib.colormaps.register(name=cname, cmap=cmap)
+                except AttributeError:
+                    matplotlib.cm.register_cmap(name=cname, cmap=cmap)
                 setattr(self, cname, cmap)
