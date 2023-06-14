@@ -21,7 +21,7 @@ with open('humidity.txt', 'r') as f:
     file.write('# r g b\r')
 
     # 逐行读取文件内容
-    for line in reversed(lines):
+    for line in lines:
         hex_color = f'#{line.strip()}'
         rgb_color = tuple(int(re.findall(r'\w\w', hex_color)[i], 16) for i in (0, 1, 2))
         print(rgb_color[0])
