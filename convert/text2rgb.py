@@ -2,7 +2,7 @@
 import re
 
 # 打开wind.txt文件
-with open('humidity.txt', 'r') as f:
+with open('temp.txt', 'r') as f:
     # 读取文件的第一行内容
     ct = f.readline().strip()
 
@@ -20,8 +20,8 @@ with open('humidity.txt', 'r') as f:
     file.write('\r')
     file.write('# r g b\r')
 
-    # 逐行读取文件内容
-    for line in lines:
+    # 逐行读取文件内容，反向打印
+    for line in reversed(lines):
         hex_color = f'#{line.strip()}'
         rgb_color = tuple(int(re.findall(r'\w\w', hex_color)[i], 16) for i in (0, 1, 2))
         print(rgb_color[0])
